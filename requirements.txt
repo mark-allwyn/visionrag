@@ -1,0 +1,27 @@
+# Core Streamlit Application
+streamlit>=1.28.0
+python-dotenv>=1.0.0
+
+# AI Model Providers
+google-generativeai>=0.3.0
+cohere>=4.0.0
+openai>=1.0.0
+anthropic>=0.3.0
+
+# Document Processing & Embeddings
+langchain-community>=0.0.20
+langchain-cohere>=0.0.4
+unstructured>=0.10.0
+PyMuPDF>=1.23.0
+pdfminer.six>=20221105
+
+# Image Processing
+Pillow>=10.0.0
+numpy>=1.24.0
+
+# Vector Store
+faiss-cpu>=1.7.0
+
+# Optional: Office Document Support
+python-docx>=0.8.11
+python-pptx>=0.6.21

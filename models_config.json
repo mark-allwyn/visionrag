@@ -1,0 +1,114 @@
+{
+  "models": {
+    "OpenAI GPT-4 Vision": {
+      "provider": "openai",
+      "model": "gpt-4-vision-preview",
+      "requires_key": "OPENAI_API_KEY",
+      "vision_capable": true,
+      "description": "OpenAI's specialized vision model (preview)"
+    },
+    "OpenAI GPT-4 Turbo": {
+      "provider": "openai",
+      "model": "gpt-4-turbo",
+      "requires_key": "OPENAI_API_KEY",
+      "vision_capable": true,
+      "description": "OpenAI's faster GPT-4 with vision support"
+    },
+    "OpenAI GPT-4o": {
+      "provider": "openai",
+      "model": "gpt-4o",
+      "requires_key": "OPENAI_API_KEY",
+      "vision_capable": true,
+      "description": "OpenAI's latest multimodal model"
+    },
+    "OpenAI GPT-3.5 Turbo": {
+      "provider": "openai",
+      "model": "gpt-3.5-turbo",
+      "requires_key": "OPENAI_API_KEY",
+      "vision_capable": false,
+      "description": "OpenAI's fast text-only model"
+    },
+    "Gemini 2.5 Pro": {
+      "provider": "gemini",
+      "model": "models/gemini-2.5-pro",
+      "requires_key": "GENAI_API_KEY",
+      "vision_capable": true,
+      "description": "Google's most advanced multimodal AI model"
+    },
+    "Gemini 2.5 Flash": {
+      "provider": "gemini",
+      "model": "models/gemini-2.5-flash",
+      "requires_key": "GENAI_API_KEY",
+      "vision_capable": true,
+      "description": "Google's fast multimodal model"
+    },
+    "Gemini 1.5 Pro": {
+      "provider": "gemini",
+      "model": "models/gemini-1.5-pro",
+      "requires_key": "GENAI_API_KEY",
+      "vision_capable": true,
+      "description": "Google's large context window model with vision"
+    },
+    "Claude 3.5 Sonnet": {
+      "provider": "claude",
+      "model": "claude-3-5-sonnet-20241022",
+      "requires_key": "ANTHROPIC_API_KEY",
+      "vision_capable": true,
+      "description": "Anthropic's most capable model with vision"
+    },
+    "Claude 3.5 Haiku": {
+      "provider": "claude",
+      "model": "claude-3-5-haiku-20241022",
+      "requires_key": "ANTHROPIC_API_KEY",
+      "vision_capable": true,
+      "description": "Anthropic's fast model with vision support"
+    },
+    "Claude 3 Opus": {
+      "provider": "claude",
+      "model": "claude-3-opus-20240229",
+      "requires_key": "ANTHROPIC_API_KEY",
+      "vision_capable": true,
+      "description": "Anthropic's most powerful model"
+    },
+    "Claude 3 Sonnet": {
+      "provider": "claude",
+      "model": "claude-3-sonnet-20240229",
+      "requires_key": "ANTHROPIC_API_KEY",
+      "vision_capable": true,
+      "description": "Anthropic's balanced model"
+    },
+    "Claude 3 Haiku": {
+      "provider": "claude",
+      "model": "claude-3-haiku-20240307",
+      "requires_key": "ANTHROPIC_API_KEY",
+      "vision_capable": true,
+      "description": "Anthropic's fastest model"
+    }
+  },
+  "default_model": "Gemini 2.5 Pro",
+  "embedding_model": {
+    "model": "embed-v4.0",
+    "provider": "cohere",
+    "description": "Cohere's latest embedding model supporting both text and vision",
+    "use_case": "Unified embedding for all content types (matches notebook approach)",
+    "dimensions": 1024,
+    "requires_key": "COHERE_API_KEY"
+  },
+  "providers": {
+    "openai": {
+      "name": "OpenAI",
+      "website": "https://openai.com",
+      "api_docs": "https://platform.openai.com/docs"
+    },
+    "gemini": {
+      "name": "Google Gemini",
+      "website": "https://ai.google.dev",
+      "api_docs": "https://ai.google.dev/docs"
+    },
+    "claude": {
+      "name": "Anthropic Claude",
+      "website": "https://www.anthropic.com",
+      "api_docs": "https://docs.anthropic.com"
+    }
+  }
+}
