@@ -208,6 +208,12 @@ def clear_vector_store():
         if 'history' in st.session_state:
             st.session_state.history = []
         
+        # Clear processing notifications
+        if 'show_processing_notification' in st.session_state:
+            del st.session_state['show_processing_notification']
+        if 'processing_summary' in st.session_state:
+            del st.session_state['processing_summary']
+        
         # Force file uploader to reset by incrementing its key
         if 'uploader_key' not in st.session_state:
             st.session_state.uploader_key = 0
@@ -226,6 +232,7 @@ def clear_vector_store():
                   "✓ Processed documents deleted\n\n" + 
                   "✓ Images and vector store cleared\n\n" +
                   "✓ Conversation history deleted\n\n" +
+                  "✓ Processing notifications cleared\n\n" +
                   "✓ Processing logs cleared")
         st.rerun()
     except Exception as e:
