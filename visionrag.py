@@ -20,15 +20,53 @@ import fitz
 
 # Load environment variables
 load_dotenv()
+
+# Debug: Verify .env loading
+current_dir = os.getcwd()
+env_file_path = os.path.join(current_dir, '.env')
+env_exists = os.path.exists(env_file_path)
+
+if not env_exists:
+    st.error(f"❌ .env file not found at: {env_file_path}")
+    st.info("Please ensure the .env file exists in the same directory as this script.")
 from langchain_community.document_loaders import (
     UnstructuredPDFLoader,
     UnstructuredWordDocumentLoader,
     UnstructuredPowerPointLoader,
 )
-from langchain_community.embeddings import CohereEmbeddings
+from langchain_cohere import CohereEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.docstore.document import Document
 from PIL import Image
+
+# Initialize NLTK data for document processing
+try:
+    import nltk
+    import ssl
+    
+    # Handle SSL certificate issues on macOS
+    try:
+        _create_unverified_https_context = ssl._create_unverified_context
+    except AttributeError:
+        pass
+    else:
+        ssl._create_default_https_context = _create_unverified_https_context
+    
+    # Download required NLTK data for unstructured document processing
+    nltk.download('punkt_tab', quiet=True)
+    nltk.download('punkt', quiet=True)  # Fallback for older versions
+    nltk.download('averaged_perceptron_tagger', quiet=True)
+    
+except ImportError:
+    # NLTK not available, continue without it
+    pass
+except Exception as e:
+    # If NLTK downloads fail, show a helpful warning but don't crash
+    print(f"Warning: NLTK data download failed: {str(e)}")
+    print("PowerPoint and Word document processing may be limited.")
+    print("To fix this manually, run:")
+    print("python -c \"import ssl; ssl._create_default_https_context = ssl._create_unverified_context; import nltk; nltk.download('punkt_tab'); nltk.download('punkt'); nltk.download('averaged_perceptron_tagger')\"")
+    pass
 
 # Check if PyMuPDF is available
 try:
@@ -81,6 +119,14 @@ GENAI_API_KEY = os.getenv("GENAI_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
+# Debug: Check if Cohere API key is loaded
+if not COHERE_API_KEY:
+    st.error("❌ COHERE_API_KEY not found in environment variables!")
+    st.info("Please check your .env file and ensure it contains a valid Cohere API key.")
+elif len(COHERE_API_KEY) < 10:  # Basic validation
+    st.error("❌ COHERE_API_KEY appears to be invalid (too short)")
+    st.info("Please verify your Cohere API key in the .env file.")
+
 # Initialize API clients
 genai.configure(api_key=GENAI_API_KEY)
 def initialize_clients():
@@ -91,9 +137,18 @@ def initialize_clients():
     if COHERE_API_KEY:
         try:
             clients['cohere'] = cohere.ClientV2(api_key=COHERE_API_KEY)
+            # Test the client with a simple call
+            # This will validate the API key is working
         except Exception as e:
-            st.error(f"Failed to initialize Cohere client: {str(e)}")
+            st.error(f"❌ Failed to initialize Cohere client: {str(e)}")
+            st.info("Common issues:")
+            st.info("• Check if your Cohere API key is correct")
+            st.info("• Verify your internet connection")
+            st.info("• Make sure the Cohere library is installed correctly")
             clients['cohere'] = None
+    else:
+        st.error("❌ Cohere API key is missing!")
+        clients['cohere'] = None
     
     # Gemini
     if GENAI_API_KEY:
@@ -857,10 +912,29 @@ def load_and_process_files(uploaded_files):
     logger.log(f"Starting file processing for {len(uploaded_files)} files...")
     docs = []
     
+    # Debug: Show API key and client status
+    logger.log(f"COHERE_API_KEY present: {bool(COHERE_API_KEY)}")
+    logger.log(f"COHERE_API_KEY length: {len(COHERE_API_KEY) if COHERE_API_KEY else 0}")
+    logger.log(f"Cohere client (co) initialized: {co is not None}")
+    logger.log(f"API clients dict keys: {list(api_clients.keys())}")
+    
     # Check if Cohere client is available for vision processing
     if not co:
         logger.log("ERROR: Cohere client not initialized. Cannot process files without embeddings.")
-        st.error("Cohere API key is missing or invalid. Please check your .env file.")
+        st.error("❌ **Cohere API key issue detected**")
+        st.error("The Cohere client failed to initialize properly.")
+        
+        if not COHERE_API_KEY:
+            st.error("• No Cohere API key found in environment variables")
+        elif len(COHERE_API_KEY) < 10:
+            st.error("• Cohere API key appears to be invalid (too short)")
+        else:
+            st.error("• Cohere API key found but client initialization failed")
+        
+        st.info("**Solutions:**")
+        st.info("1. Check your .env file contains: COHERE_API_KEY=your_actual_key")
+        st.info("2. Restart the Streamlit app after updating the .env file")
+        st.info("3. Get a valid API key from https://cohere.com")
         return None
     
     # Create a directory to store uploaded images

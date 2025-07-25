@@ -12,6 +12,7 @@ anthropic>=0.3.0
 langchain-community>=0.0.20
 langchain-cohere>=0.0.4
 unstructured>=0.10.0
+nltk>=3.8.1
 PyMuPDF>=1.23.0
 pdfminer.six>=20221105
 

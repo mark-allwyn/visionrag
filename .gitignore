@@ -29,6 +29,9 @@ venv/
 ENV/
 env/
 
+# UV
+uv.lock
+
 # Streamlit
 .streamlit/
 
